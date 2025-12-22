@@ -1,0 +1,12 @@
+__pycache__/
+
+# Generated caches/logs
+sas_cache/
+probe_logs/
+
+# Data exports
+*.tsv
+
+# SAS planning artifacts
+sas_plan
+sas_plan/
