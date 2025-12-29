@@ -14,6 +14,9 @@ LOG_DIR = "logs"
 
 PLANNERS = [
     "enhsp",
+    "symk",
+    "aries",
+    "lpg",
     "fast-downward"
 ]
 
@@ -114,8 +117,12 @@ def run_benchmarks_up(root_path, dry_run=True):
                 continue
 
             print(f"   Queued {len(problems_to_run)} problems (Skipped {len(problems)-len(problems_to_run)}).")
-            
+            cont = 0
             for prob_file in problems_to_run:
+                if cont >= 10:
+                    print("10 problems evaluated for this domain")
+                    continue
+
                 prob_path = os.path.join(dirpath, prob_file)
 
                 # --- 1. Parsear Problema ---
@@ -135,6 +142,12 @@ def run_benchmarks_up(root_path, dry_run=True):
                     if (domain_name, prob_file) in completed_tasks[planner_name]:
                         # Opcional: imprimir que se salta, o dejarlo en silencio para limpiar output
                         # print(f"      ⏭️  {prob_file} -> {planner_name} (Already done)")
+                        continue
+
+                    print(domain_name, prob_file)
+
+                    if domain_name == "data-network-sat18-strips" and prob_file == "p10.pddl":
+                        print("Skipping problem")
                         continue
 
                     if dry_run:
@@ -169,6 +182,8 @@ def run_benchmarks_up(root_path, dry_run=True):
                             print(f"      >>> 🛑 DETALLE DEL ERROR: {e}") 
                             write_csv_result(planner_name, domain_name, prob_file, False, duration)
                             completed_tasks[planner_name].add((domain_name, prob_file))
+
+                cont += 1
 
             print("-" * 40)
 
