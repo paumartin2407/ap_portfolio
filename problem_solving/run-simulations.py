@@ -1,5 +1,6 @@
 import os
 
+# Set Java memory limit for planners like ENHSP
 os.environ["JAVA_TOOL_OPTIONS"] = "-Xmx10g"
 
 import argparse
@@ -8,20 +9,20 @@ import sys
 import csv
 from unified_planning.shortcuts import *
 from unified_planning.io import PDDLReader
+from unified_planning.engines import CompilationKind
 
 # --- GLOBAL CONFIGURATION ---
 LOG_DIR = "logs"
 
 PLANNERS = [
     "enhsp",
-    "symk",
-    "aries",
     "lpg",
-    "fast-downward"
+    "fast-downward", 
+    "symk"           
 ]
 
-# --- CONFIGURACIÓN DE TIEMPO ---
-TIMEOUT_SEC = 300     # 5 minutos límite por problema
+# --- TIME CONFIGURATION ---
+TIMEOUT_SEC = 300     # 5 minutes limit
 
 def get_all_problems(domain_dir):
     files = [
@@ -32,176 +33,164 @@ def get_all_problems(domain_dir):
 
 def load_existing_results():
     """
-    Lee todos los CSVs existentes y devuelve un diccionario de Sets.
-    Estructura: { 'planner_name': {('domain', 'problem'), ...} }
+    Reads existing CSVs to skip already solved problems.
+    Structure: { 'planner_name': {('domain', 'problem'), ...} }
     """
     completed = {p: set() for p in PLANNERS}
-    
     for planner in PLANNERS:
         csv_path = os.path.join(LOG_DIR, planner, "results.csv")
         if os.path.isfile(csv_path):
             try:
                 with open(csv_path, mode='r', encoding='utf-8') as f:
                     reader = csv.reader(f)
-                    next(reader, None) # Saltar cabecera
+                    next(reader, None) 
                     for row in reader:
                         if len(row) >= 2:
-                            # CSV format: name, domain, solved, time
                             p_name = row[0]
                             d_name = row[1]
                             completed[planner].add((d_name, p_name))
-            except Exception as e:
-                print(f"⚠️ Error leyendo logs previos de {planner}: {e}")
-    
+            except Exception:
+                pass
     return completed
 
-def write_csv_result(planner_name, domain_name, prob_name, solved, duration):
+def write_csv_result(planner_name, domain_name, prob_name, solved, duration, note=""):
     planner_dir = os.path.join(LOG_DIR, planner_name)
     os.makedirs(planner_dir, exist_ok=True)
-    
     csv_path = os.path.join(planner_dir, "results.csv")
     file_exists = os.path.isfile(csv_path)
-    
     try:
         with open(csv_path, mode='a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             if not file_exists:
-                writer.writerow(["name", "domain", "solved", "time-seconds"])
-            writer.writerow([prob_name, domain_name, solved, f"{duration:.4f}"])
-            
+                writer.writerow(["name", "domain", "solved", "time-seconds", "note"])
+            writer.writerow([prob_name, domain_name, solved, f"{duration:.4f}", note])
     except Exception as e:
-        print(f"⚠️  Error escribiendo en CSV: {e}")
+        print(f"⚠️  Error writing CSV: {e}")
 
 def run_benchmarks_up(root_path, dry_run=True):
     print(f"--- Scanning ALL benchmarks in: {os.path.abspath(root_path)} ---")
-    print(f"--- Planners: {PLANNERS} ---")
-    print(f"--- Timeout: {TIMEOUT_SEC}s ---")
-    print(f"--- Output: {LOG_DIR}/<planner>/results.csv ---\n")
     
-    # --- PASO NUEVO: Cargar historial ---
     if not dry_run:
-        print("--- Loading existing results to skip duplicates... ---")
         completed_tasks = load_existing_results()
     else:
         completed_tasks = {p: set() for p in PLANNERS}
 
-    domains_found = 0
     reader = PDDLReader()
-
-    for dirpath, dirnames, filenames in os.walk(root_path):
-        
+    
+    for dirpath, _, filenames in os.walk(root_path):
         if "domain.pddl" in filenames:
             domain_name = os.path.basename(dirpath)
             domain_file = os.path.join(dirpath, "domain.pddl")
             problems = get_all_problems(dirpath)
-            
             if not problems: continue
+            problems = problems[:10]
 
-            domains_found += 1
-            print(f"📂 Domain Found ({domains_found}): {domain_name}")
+            print(f"📂 Domain Found: {domain_name}")
             
-            # Filtrar problemas: ¿Hay algún planificador que AÚN no lo haya hecho?
-            # Si todos los planificadores ya hicieron este problema, ni lo parseamos.
+            # Filter problems
             problems_to_run = []
             for p_file in problems:
-                needs_run = False
-                for pl in PLANNERS:
-                    if (domain_name, p_file) not in completed_tasks[pl]:
-                        needs_run = True
-                        break
-                if needs_run or dry_run:
+                if dry_run:
                     problems_to_run.append(p_file)
+                else:
+                    # If any planner hasn't done it, we queue it
+                    if any((domain_name, p_file) not in completed_tasks[pl] for pl in PLANNERS):
+                        problems_to_run.append(p_file)
             
             if not problems_to_run:
-                print(f"   ✨ All {len(problems)} problems already solved in this domain. Skipping.")
+                print(f"   ✨ All problems solved. Skipping domain.")
                 continue
 
-            print(f"   Queued {len(problems_to_run)} problems (Skipped {len(problems)-len(problems_to_run)}).")
-            cont = 0
+            print(f"   Queued {len(problems_to_run)} problems.")
+            
             for prob_file in problems_to_run:
-                if cont >= 10:
-                    print("10 problems evaluated for this domain")
-                    continue
-
                 prob_path = os.path.join(dirpath, prob_file)
 
-                # --- 1. Parsear Problema ---
+                # --- 1. Parse Problem ---
                 try:
                     if not dry_run:
                         problem = reader.parse_problem(domain_file, prob_path)
                     else:
-                        problem = None 
+                        problem = None
                 except Exception as e:
-                    print(f"      ❌ Error parsing {prob_file} (Skipping): {e}")
+                    print(f"      ❌ Parse Error in {prob_file}: {e}")
                     continue
 
-                # --- 2. Ejecutar Planificadores ---
+                # --- 2. Run Planners ---
                 for planner_name in PLANNERS:
-                    
-                    # CHEQUEO DE SKIP
                     if (domain_name, prob_file) in completed_tasks[planner_name]:
-                        # Opcional: imprimir que se salta, o dejarlo en silencio para limpiar output
-                        # print(f"      ⏭️  {prob_file} -> {planner_name} (Already done)")
                         continue
 
-                    print(domain_name, prob_file)
-
+                    # Manual Skip for known broken files
                     if domain_name == "data-network-sat18-strips" and prob_file == "p10.pddl":
-                        print("Skipping problem")
                         continue
 
                     if dry_run:
                         print(f"      [DRY RUN] {prob_file} -> {planner_name}")
-                    else:
-                        print(f"      🚀 {prob_file} -> {planner_name} ... ", end="", flush=True)
-                        start_time = time.time()
-                        solved = False
-                        
-                        try:
-                            with OneshotPlanner(name=planner_name) as planner:
-                                result = planner.solve(problem, timeout=TIMEOUT_SEC)
-                                duration = time.time() - start_time
-                                
-                                if result.status.name in ['SOLVED_SATISFICING', 'SOLVED_OPTIMALLY']:
-                                    print(f"✅ Solved ({duration:.2f}s)")
-                                    solved = True
-                                else:
-                                    print(f"❌ {result.status.name} ({duration:.2f}s)")
-                                    if result.log_messages:
-                                        for log in result.log_messages:
-                                            print(f"      [Log]: {log.message}")
-                                    solved = False
-                                
-                                # Escribir resultado y actualizar memoria local por si acaso
-                                write_csv_result(planner_name, domain_name, prob_file, solved, duration)
-                                completed_tasks[planner_name].add((domain_name, prob_file))
+                        continue
 
-                        except Exception as e:
+                    print(f"      🚀 {prob_file} -> {planner_name} ... ", end="", flush=True)
+                    start_time = time.time()
+                    
+                    try:
+                        # --- 3. PRE-CHECK: Support ---
+                        # We use a temp planner instance just to check support
+                        supported = False
+                        try:
+                            with OneshotPlanner(name=planner_name) as temp_planner:
+                                if temp_planner.supports(problem.kind):
+                                    supported = True
+                        except:
+                            # If we can't even check support (e.g. planner not installed), fail gracefully
+                            supported = False
+
+                        final_problem = problem
+                        
+                        # --- 4. COMPILATION (Automatic Fixes) ---
+                        # If unsupported OR if it has conditional effects (which trip up many planners), try compiling
+                        if not supported or problem.kind.has_conditional_effects():
+                            try:
+                                with Compiler(problem_kind=problem.kind, compilation_kind=CompilationKind.CONDITIONAL_EFFECTS) as compiler:
+                                    res = compiler.compile(problem, compilation_kind=CompilationKind.CONDITIONAL_EFFECTS)
+                                    final_problem = res.problem
+                                    # Re-check support on the compiled problem
+                                    with OneshotPlanner(name=planner_name) as temp_planner:
+                                        if temp_planner.supports(final_problem.kind):
+                                            supported = True
+                            except Exception as comp_err:
+                                # Compilation failed, proceed with original problem and see if it works or fails
+                                pass
+
+                        if not supported:
+                            # Last ditch: just try running it. If it fails, the catch block below handles it.
+                            # But we log a warning.
+                            pass 
+
+                        # --- 5. SOLVE ---
+                        with OneshotPlanner(name=planner_name) as planner:
+                            result = planner.solve(final_problem, timeout=TIMEOUT_SEC)
                             duration = time.time() - start_time
-                            print(f"⚠️ Crash/Error ({duration:.2f}s)")
-                            print(f"      >>> 🛑 DETALLE DEL ERROR: {e}") 
-                            write_csv_result(planner_name, domain_name, prob_file, False, duration)
+                            
+                            if result.status.name in ['SOLVED_SATISFICING', 'SOLVED_OPTIMALLY']:
+                                print(f"✅ Solved ({duration:.2f}s)")
+                                write_csv_result(planner_name, domain_name, prob_file, True, duration)
+                            else:
+                                print(f"❌ {result.status.name} ({duration:.2f}s)")
+                                write_csv_result(planner_name, domain_name, prob_file, False, duration, result.status.name)
+                            
                             completed_tasks[planner_name].add((domain_name, prob_file))
 
-                cont += 1
-
-            print("-" * 40)
-
-    if domains_found == 0:
-        print("\n❌ No domains found.")
-    else:
-        print(f"\n--- Complete. Processed {domains_found} domains. ---")
+                    except Exception as e:
+                        duration = time.time() - start_time
+                        err_msg = str(e).split('\n')[0] # Keep it short
+                        print(f"⚠️  Error: {err_msg}")
+                        write_csv_result(planner_name, domain_name, prob_file, False, duration, f"ERROR: {err_msg}")
+                        completed_tasks[planner_name].add((domain_name, prob_file))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run Benchmarks with Resume capability")
-    parser.add_argument("--run", action="store_true", help="Actually run the planners")
-    parser.add_argument("--dir", default=".", help="Root directory of benchmarks")
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--run", action="store_true")
+    parser.add_argument("--dir", default=".")
     args = parser.parse_args()
     
-    is_dry_run = not args.run
-    
-    if not is_dry_run:
-        os.makedirs(LOG_DIR, exist_ok=True)
-    
-    run_benchmarks_up(args.dir, dry_run=is_dry_run)
+    run_benchmarks_up(args.dir, dry_run=not args.run)

@@ -249,3 +249,18 @@ p09.pddl,data-network-sat18-strips,False,0.0804
 p11.pddl,data-network-sat18-strips,False,1.7358
 p12.pddl,data-network-sat18-strips,False,3.1433
 p13.pddl,data-network-sat18-strips,False,8.9498
+p01.pddl,settlers-sat18-strips,False,2.5256
+p02.pddl,settlers-sat18-strips,False,1.2371
+p03.pddl,settlers-sat18-strips,False,1.7732
+p04.pddl,settlers-sat18-strips,False,2.2561
+p05.pddl,settlers-sat18-strips,False,3.1476
+p06.pddl,settlers-sat18-strips,False,3.7449
+p07.pddl,settlers-sat18-strips,False,6.3530
+p08.pddl,settlers-sat18-strips,False,0.9271
+p09.pddl,settlers-sat18-strips,False,2.6776,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,settlers-sat18-strips,False,2.4032,ERROR: <_InactiveRpcError of RPC that terminated with:
+p01.pddl,city-car-sat14-strips,False,0.1049,ERROR: <_InactiveRpcError of RPC that terminated with:
+p02.pddl,city-car-sat14-strips,False,0.0902,ERROR: <_InactiveRpcError of RPC that terminated with:
+p03.pddl,city-car-sat14-strips,False,0.0863,ERROR: <_InactiveRpcError of RPC that terminated with:
+p04.pddl,city-car-sat14-strips,False,0.0963,ERROR: <_InactiveRpcError of RPC that terminated with:
+p05.pddl,city-car-sat14-strips,False,0.0745,ERROR: <_InactiveRpcError of RPC that terminated with:

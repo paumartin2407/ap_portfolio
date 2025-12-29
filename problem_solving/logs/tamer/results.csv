@@ -1,0 +1,120 @@
+name,domain,solved,time-seconds
+p01.pddl,scanalyzer-sat11-strips,False,0.0028
+p02.pddl,scanalyzer-sat11-strips,False,0.0033
+p03.pddl,scanalyzer-sat11-strips,False,0.0028
+p04.pddl,scanalyzer-sat11-strips,False,0.0037
+p05.pddl,scanalyzer-sat11-strips,False,0.0035
+p06.pddl,scanalyzer-sat11-strips,False,0.0049
+p07.pddl,scanalyzer-sat11-strips,False,0.0038
+p08.pddl,scanalyzer-sat11-strips,False,0.0027
+p09.pddl,scanalyzer-sat11-strips,False,0.0036
+p10.pddl,scanalyzer-sat11-strips,False,0.0034
+p11.pddl,scanalyzer-sat11-strips,False,0.0034
+p12.pddl,scanalyzer-sat11-strips,False,0.0031
+p13.pddl,scanalyzer-sat11-strips,False,0.0030
+p14.pddl,scanalyzer-sat11-strips,False,0.0041
+p15.pddl,scanalyzer-sat11-strips,False,0.0038
+p16.pddl,scanalyzer-sat11-strips,False,0.0038
+p17.pddl,scanalyzer-sat11-strips,False,0.0037
+p18.pddl,scanalyzer-sat11-strips,False,0.0034
+p19.pddl,scanalyzer-sat11-strips,False,0.0035
+p20.pddl,scanalyzer-sat11-strips,False,0.0031
+p01.pddl,folding-sat23-strips,False,0.0043
+p02.pddl,folding-sat23-strips,False,0.0062
+p03.pddl,folding-sat23-strips,False,0.0076
+p04.pddl,folding-sat23-strips,False,0.0106
+p05.pddl,folding-sat23-strips,False,0.0096
+p06.pddl,folding-sat23-strips,False,0.0106
+p07.pddl,folding-sat23-strips,False,0.0142
+p08.pddl,folding-sat23-strips,False,0.0060
+p09.pddl,folding-sat23-strips,False,0.0061
+p10.pddl,folding-sat23-strips,False,0.0068
+p11.pddl,folding-sat23-strips,False,0.0078
+p12.pddl,folding-sat23-strips,False,0.0096
+p13.pddl,folding-sat23-strips,False,0.0199
+p14.pddl,folding-sat23-strips,False,0.0051
+p15.pddl,folding-sat23-strips,False,0.0056
+p16.pddl,folding-sat23-strips,False,0.0064
+p17.pddl,folding-sat23-strips,False,0.0136
+p18.pddl,folding-sat23-strips,False,0.0121
+p19.pddl,folding-sat23-strips,False,0.0146
+p20.pddl,folding-sat23-strips,False,0.0292
+p01.pddl,woodworking-sat11-strips,False,0.0187
+p02.pddl,woodworking-sat11-strips,False,0.0181
+p03.pddl,woodworking-sat11-strips,False,0.0204
+p04.pddl,woodworking-sat11-strips,False,0.0204
+p05.pddl,woodworking-sat11-strips,False,0.0212
+p06.pddl,woodworking-sat11-strips,False,0.0246
+p07.pddl,woodworking-sat11-strips,False,0.0189
+p08.pddl,woodworking-sat11-strips,False,0.0207
+p09.pddl,woodworking-sat11-strips,False,0.0196
+p11.pddl,woodworking-sat11-strips,False,0.0280
+p12.pddl,woodworking-sat11-strips,False,0.0326
+p13.pddl,woodworking-sat11-strips,False,0.0242
+p14.pddl,woodworking-sat11-strips,False,0.0224
+p15.pddl,woodworking-sat11-strips,False,0.0234
+p16.pddl,woodworking-sat11-strips,False,0.0129
+p17.pddl,woodworking-sat11-strips,False,0.0092
+p18.pddl,woodworking-sat11-strips,False,0.0093
+p19.pddl,woodworking-sat11-strips,False,0.0097
+p20.pddl,woodworking-sat11-strips,False,0.0094
+p1-11-4-15.pddl,barman-sat14-strips,False,0.0051
+p1-11-5-15.pddl,barman-sat14-strips,False,0.0632,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p1-11-5-16.pddl,barman-sat14-strips,False,0.0386,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p2-10-4-13.pddl,barman-sat14-strips,False,0.0341,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p2-11-4-15.pddl,barman-sat14-strips,False,0.0400,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p2-11-5-15.pddl,barman-sat14-strips,False,0.0421,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p2-11-5-16.pddl,barman-sat14-strips,False,0.0394,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p2-11-5-17.pddl,barman-sat14-strips,False,0.0404,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p3-10-4-13.pddl,barman-sat14-strips,False,0.0335,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p3-11-4-15.pddl,barman-sat14-strips,False,0.0407,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p3-11-5-15.pddl,barman-sat14-strips,False,0.0400,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p3-11-5-16.pddl,barman-sat14-strips,False,0.0452,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p3-11-5-17.pddl,barman-sat14-strips,False,0.0980,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p4-11-4-14.pddl,barman-sat14-strips,False,0.0409,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p4-11-4-15.pddl,barman-sat14-strips,False,0.0409,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p4-11-5-15.pddl,barman-sat14-strips,False,0.0387,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p5-10-4-13.pddl,barman-sat14-strips,False,0.0343,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p5-11-4-15.pddl,barman-sat14-strips,False,0.0394,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p5-11-5-15.pddl,barman-sat14-strips,False,0.0419,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p5-11-5-16.pddl,barman-sat14-strips,False,0.0446,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: ontable(shaker1) type of parameter 1 is shaker while it should be container
+p01.pddl,pegsol-sat11-strips,True,7.7220,
+p02.pddl,pegsol-sat11-strips,True,9.9352,
+p03.pddl,pegsol-sat11-strips,True,12.2221,
+p04.pddl,pegsol-sat11-strips,True,7.5088,
+p05.pddl,pegsol-sat11-strips,True,10.2737,
+p06.pddl,pegsol-sat11-strips,True,7.8298,
+p07.pddl,pegsol-sat11-strips,True,6.7648,
+p08.pddl,pegsol-sat11-strips,True,4.4345,
+p09.pddl,pegsol-sat11-strips,True,5.4333,
+p10.pddl,pegsol-sat11-strips,True,5.2122,
+p11.pddl,pegsol-sat11-strips,True,5.0369,
+p12.pddl,pegsol-sat11-strips,True,8.1693,
+p13.pddl,pegsol-sat11-strips,True,5.6274,
+p14.pddl,pegsol-sat11-strips,True,13.2642,
+p15.pddl,pegsol-sat11-strips,True,18.0444,
+p16.pddl,pegsol-sat11-strips,True,9.7630,
+p17.pddl,pegsol-sat11-strips,True,11.4986,
+p18.pddl,pegsol-sat11-strips,True,9.1336,
+p19.pddl,pegsol-sat11-strips,True,31.9391,
+p20.pddl,pegsol-sat11-strips,True,190.0195,
+p01.pddl,caldera-sat18-strips,False,0.7083,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_bhhost) type of parameter 1 is observedhost while it should be object_type
+p02.pddl,caldera-sat18-strips,False,0.3486,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_bhhost) type of parameter 1 is observedhost while it should be object_type
+p03.pddl,caldera-sat18-strips,False,0.4867,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_cdhost) type of parameter 1 is observedhost while it should be object_type
+p04.pddl,caldera-sat18-strips,False,0.3117,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_cdhost) type of parameter 1 is observedhost while it should be object_type
+p05.pddl,caldera-sat18-strips,False,0.2325,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_btrat) type of parameter 1 is observedrat while it should be object_type
+p06.pddl,caldera-sat18-strips,False,0.3496,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_btrat) type of parameter 1 is observedrat while it should be object_type
+p07.pddl,caldera-sat18-strips,False,0.7493,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_cmhost) type of parameter 1 is observedhost while it should be object_type
+p08.pddl,caldera-sat18-strips,False,0.6718,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_cmhost) type of parameter 1 is observedhost while it should be object_type
+p09.pddl,caldera-sat18-strips,False,1.4803,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_dphost) type of parameter 1 is observedhost while it should be object_type
+p10.pddl,caldera-sat18-strips,False,0.5420,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_bwhost) type of parameter 1 is observedhost while it should be object_type
+p11.pddl,caldera-sat18-strips,False,0.6408,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_bghost) type of parameter 1 is observedhost while it should be object_type
+p12.pddl,caldera-sat18-strips,False,5.5990,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_hthost) type of parameter 1 is observedhost while it should be object_type
+p13.pddl,caldera-sat18-strips,False,0.9172,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_ddrat) type of parameter 1 is observedrat while it should be object_type
+p14.pddl,caldera-sat18-strips,False,3.3165,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_ephost) type of parameter 1 is observedhost while it should be object_type
+p15.pddl,caldera-sat18-strips,False,1.3506,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_eehost) type of parameter 1 is observedhost while it should be object_type
+p16.pddl,caldera-sat18-strips,False,1.4809,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_eghost) type of parameter 1 is observedhost while it should be object_type
+p17.pddl,caldera-sat18-strips,False,1.2786,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_dohost) type of parameter 1 is observedhost while it should be object_type
+p18.pddl,caldera-sat18-strips,False,0.8020,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_dahost) type of parameter 1 is observedhost while it should be object_type
+p19.pddl,caldera-sat18-strips,False,2.0272,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_fkhost) type of parameter 1 is observedhost while it should be object_type
+p20.pddl,caldera-sat18-strips,False,1.9593,ERROR: TypeCheckingError: Found a fluent reference having non-compatible children: knows(id_eihost) type of parameter 1 is observedhost while it should be object_type

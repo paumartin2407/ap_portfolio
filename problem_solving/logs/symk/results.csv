@@ -250,3 +250,17 @@ p10.pddl,data-network-sat18-strips,False,1130.9259
 p11.pddl,data-network-sat18-strips,False,301.5037
 p12.pddl,data-network-sat18-strips,False,306.7316
 p13.pddl,data-network-sat18-strips,False,310.7253
+p01.pddl,settlers-sat18-strips,False,2.4032
+p02.pddl,settlers-sat18-strips,False,3.3650
+p03.pddl,settlers-sat18-strips,False,3.5951
+p04.pddl,settlers-sat18-strips,False,4.5989
+p05.pddl,settlers-sat18-strips,False,6.0430
+p06.pddl,settlers-sat18-strips,False,7.3042
+p07.pddl,settlers-sat18-strips,False,13.2762
+p08.pddl,settlers-sat18-strips,False,2.0637
+p09.pddl,settlers-sat18-strips,False,2.5940,INTERNAL_ERROR
+p10.pddl,settlers-sat18-strips,False,3.6531,INTERNAL_ERROR
+p01.pddl,city-car-sat14-strips,True,24.3287,
+p02.pddl,city-car-sat14-strips,False,300.0535,TIMEOUT
+p03.pddl,city-car-sat14-strips,False,300.1227,TIMEOUT
+p04.pddl,city-car-sat14-strips,False,300.0595,TIMEOUT
