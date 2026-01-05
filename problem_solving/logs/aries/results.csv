@@ -264,3 +264,105 @@ p02.pddl,city-car-sat14-strips,False,0.0902,ERROR: <_InactiveRpcError of RPC tha
 p03.pddl,city-car-sat14-strips,False,0.0863,ERROR: <_InactiveRpcError of RPC that terminated with:
 p04.pddl,city-car-sat14-strips,False,0.0963,ERROR: <_InactiveRpcError of RPC that terminated with:
 p05.pddl,city-car-sat14-strips,False,0.0745,ERROR: <_InactiveRpcError of RPC that terminated with:
+p06.pddl,city-car-sat14-strips,False,0.1447,ERROR: <_InactiveRpcError of RPC that terminated with:
+p07.pddl,city-car-sat14-strips,False,0.1126,ERROR: <_InactiveRpcError of RPC that terminated with:
+p08.pddl,city-car-sat14-strips,False,0.1173,ERROR: <_InactiveRpcError of RPC that terminated with:
+p09.pddl,city-car-sat14-strips,False,0.1233,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,city-car-sat14-strips,False,0.1223,ERROR: <_InactiveRpcError of RPC that terminated with:
+d-10-1.pddl,ged-sat14-strips,False,300.1405,TIMEOUT
+d-10-2.pddl,ged-sat14-strips,False,300.1259,TIMEOUT
+d-10-3.pddl,ged-sat14-strips,False,300.1489,TIMEOUT
+d-10-4.pddl,ged-sat14-strips,False,300.1289,TIMEOUT
+d-10-5.pddl,ged-sat14-strips,False,300.1483,TIMEOUT
+d-10-6.pddl,ged-sat14-strips,False,300.1776,TIMEOUT
+d-11-1.pddl,ged-sat14-strips,False,300.1001,TIMEOUT
+d-11-3.pddl,ged-sat14-strips,False,300.1171,TIMEOUT
+d-11-5.pddl,ged-sat14-strips,False,300.1405,TIMEOUT
+d-11-6.pddl,ged-sat14-strips,False,300.1208,TIMEOUT
+p01.pddl,termes-sat18-strips,False,300.0969,TIMEOUT
+p02.pddl,termes-sat18-strips,False,300.0739,TIMEOUT
+p03.pddl,termes-sat18-strips,False,300.0803,TIMEOUT
+p04.pddl,termes-sat18-strips,False,300.0772,TIMEOUT
+p05.pddl,termes-sat18-strips,False,300.0916,TIMEOUT
+p06.pddl,termes-sat18-strips,False,300.0698,TIMEOUT
+p07.pddl,termes-sat18-strips,False,300.0839,TIMEOUT
+p08.pddl,termes-sat18-strips,False,300.0768,TIMEOUT
+p09.pddl,termes-sat18-strips,False,300.0773,TIMEOUT
+p10.pddl,termes-sat18-strips,False,300.0742,TIMEOUT
+p01.pddl,sokoban-sat11-strips,False,1.1925,ERROR: <_InactiveRpcError of RPC that terminated with:
+p02.pddl,sokoban-sat11-strips,False,1.4737,ERROR: <_InactiveRpcError of RPC that terminated with:
+p03.pddl,sokoban-sat11-strips,False,300.7428,TIMEOUT
+p04.pddl,sokoban-sat11-strips,False,0.6126,ERROR: <_InactiveRpcError of RPC that terminated with:
+p05.pddl,sokoban-sat11-strips,False,0.5788,ERROR: <_InactiveRpcError of RPC that terminated with:
+p06.pddl,sokoban-sat11-strips,False,1.0390,ERROR: <_InactiveRpcError of RPC that terminated with:
+p07.pddl,sokoban-sat11-strips,False,300.5369,TIMEOUT
+p08.pddl,sokoban-sat11-strips,False,0.7738,ERROR: <_InactiveRpcError of RPC that terminated with:
+p09.pddl,sokoban-sat11-strips,False,50.9060,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,sokoban-sat11-strips,False,2.2800,ERROR: <_InactiveRpcError of RPC that terminated with:
+pfile06-021.pddl,barman-sat11-strips,False,300.1160,TIMEOUT
+pfile06-022.pddl,barman-sat11-strips,False,300.1166,TIMEOUT
+pfile06-023.pddl,barman-sat11-strips,False,300.1033,TIMEOUT
+pfile06-024.pddl,barman-sat11-strips,False,300.0840,TIMEOUT
+pfile07-025.pddl,barman-sat11-strips,False,300.1584,TIMEOUT
+pfile07-026.pddl,barman-sat11-strips,False,300.1112,TIMEOUT
+pfile07-027.pddl,barman-sat11-strips,False,300.1143,TIMEOUT
+pfile07-028.pddl,barman-sat11-strips,False,300.1249,TIMEOUT
+pfile08-029.pddl,barman-sat11-strips,False,300.1684,TIMEOUT
+pfile08-030.pddl,barman-sat11-strips,False,300.1547,TIMEOUT
+p01.pddl,nurikabe-sat18-strips,False,0.1477,ERROR: <_InactiveRpcError of RPC that terminated with:
+p02.pddl,nurikabe-sat18-strips,False,0.0937,ERROR: <_InactiveRpcError of RPC that terminated with:
+p03.pddl,nurikabe-sat18-strips,False,0.1813,ERROR: <_InactiveRpcError of RPC that terminated with:
+p04.pddl,nurikabe-sat18-strips,False,0.1631,ERROR: <_InactiveRpcError of RPC that terminated with:
+p05.pddl,nurikabe-sat18-strips,False,0.2290,ERROR: <_InactiveRpcError of RPC that terminated with:
+p06.pddl,nurikabe-sat18-strips,False,0.2072,ERROR: <_InactiveRpcError of RPC that terminated with:
+p07.pddl,nurikabe-sat18-strips,False,0.3260,ERROR: <_InactiveRpcError of RPC that terminated with:
+p08.pddl,nurikabe-sat18-strips,False,0.2668,ERROR: <_InactiveRpcError of RPC that terminated with:
+p09.pddl,nurikabe-sat18-strips,False,0.4481,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,nurikabe-sat18-strips,False,0.3649,ERROR: <_InactiveRpcError of RPC that terminated with:
+p01.pddl,peg-solitaire-sat08-strips,False,1.2314,ERROR: <_InactiveRpcError of RPC that terminated with:
+p02.pddl,peg-solitaire-sat08-strips,False,0.7085,ERROR: <_InactiveRpcError of RPC that terminated with:
+p03.pddl,peg-solitaire-sat08-strips,False,0.7169,ERROR: <_InactiveRpcError of RPC that terminated with:
+p04.pddl,peg-solitaire-sat08-strips,False,0.7155,ERROR: <_InactiveRpcError of RPC that terminated with:
+p05.pddl,peg-solitaire-sat08-strips,False,0.7071,ERROR: <_InactiveRpcError of RPC that terminated with:
+p06.pddl,peg-solitaire-sat08-strips,False,0.7195,ERROR: <_InactiveRpcError of RPC that terminated with:
+p07.pddl,peg-solitaire-sat08-strips,False,0.7009,ERROR: <_InactiveRpcError of RPC that terminated with:
+p08.pddl,peg-solitaire-sat08-strips,False,0.7023,ERROR: <_InactiveRpcError of RPC that terminated with:
+p09.pddl,peg-solitaire-sat08-strips,False,0.7006,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,peg-solitaire-sat08-strips,False,0.7066,ERROR: <_InactiveRpcError of RPC that terminated with:
+p01.pddl,maintenance-sat14-strips,False,1.3734,ERROR: <_InactiveRpcError of RPC that terminated with:
+p02.pddl,maintenance-sat14-strips,False,1.3891,ERROR: <_InactiveRpcError of RPC that terminated with:
+p03.pddl,maintenance-sat14-strips,False,0.9807,ERROR: <_InactiveRpcError of RPC that terminated with:
+p04.pddl,maintenance-sat14-strips,False,5.4898,ERROR: <_InactiveRpcError of RPC that terminated with:
+p05.pddl,maintenance-sat14-strips,False,25.1975,ERROR: <_InactiveRpcError of RPC that terminated with:
+p06.pddl,maintenance-sat14-strips,False,3.1845,ERROR: <_InactiveRpcError of RPC that terminated with:
+p07.pddl,maintenance-sat14-strips,False,17.5895,ERROR: <_InactiveRpcError of RPC that terminated with:
+p08.pddl,maintenance-sat14-strips,False,10.7993,ERROR: <_InactiveRpcError of RPC that terminated with:
+p09.pddl,maintenance-sat14-strips,False,17.6733,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,maintenance-sat14-strips,False,20.6020,ERROR: <_InactiveRpcError of RPC that terminated with:
+p01.pddl,elevators-sat08-strips,False,1.3227,INTERNAL_ERROR
+p02.pddl,elevators-sat08-strips,False,0.2844,INTERNAL_ERROR
+p03.pddl,elevators-sat08-strips,False,0.3227,INTERNAL_ERROR
+p04.pddl,elevators-sat08-strips,False,0.2839,INTERNAL_ERROR
+p05.pddl,elevators-sat08-strips,False,0.3238,INTERNAL_ERROR
+p06.pddl,elevators-sat08-strips,False,0.3128,INTERNAL_ERROR
+p07.pddl,elevators-sat08-strips,False,0.3263,INTERNAL_ERROR
+p08.pddl,elevators-sat08-strips,False,0.3329,INTERNAL_ERROR
+p09.pddl,elevators-sat08-strips,False,0.3474,INTERNAL_ERROR
+p10.pddl,elevators-sat08-strips,False,0.3295,INTERNAL_ERROR
+p01.pddl,transport-sat14-strips,False,3.8324,INTERNAL_ERROR
+p02.pddl,transport-sat14-strips,False,1.2133,INTERNAL_ERROR
+p03.pddl,transport-sat14-strips,False,1.0967,INTERNAL_ERROR
+p04.pddl,transport-sat14-strips,False,4.6138,INTERNAL_ERROR
+p05.pddl,transport-sat14-strips,False,0.5778,INTERNAL_ERROR
+p06.pddl,transport-sat14-strips,False,0.5540,INTERNAL_ERROR
+p07.pddl,transport-sat14-strips,False,1.6376,ERROR: <_InactiveRpcError of RPC that terminated with:
+p08.pddl,transport-sat14-strips,False,1.1294,ERROR: <_InactiveRpcError of RPC that terminated with:
+p09.pddl,transport-sat14-strips,False,1.1522,ERROR: <_InactiveRpcError of RPC that terminated with:
+p10.pddl,transport-sat14-strips,False,1.0698,ERROR: <_InactiveRpcError of RPC that terminated with:
+p01.pddl,ricochet-robots-sat23-strips,False,16.2934,ERROR: <_InactiveRpcError of RPC that terminated with:
+p02.pddl,ricochet-robots-sat23-strips,False,7.0629,ERROR: <_InactiveRpcError of RPC that terminated with:
+p03.pddl,ricochet-robots-sat23-strips,False,9.1202,ERROR: <_InactiveRpcError of RPC that terminated with:
+p04.pddl,ricochet-robots-sat23-strips,False,7.1055,ERROR: <_InactiveRpcError of RPC that terminated with:
+p05.pddl,ricochet-robots-sat23-strips,False,7.1660,ERROR: <_InactiveRpcError of RPC that terminated with:
+p06.pddl,ricochet-robots-sat23-strips,False,7.0164,ERROR: <_InactiveRpcError of RPC that terminated with:
+p07.pddl,ricochet-robots-sat23-strips,False,9.7165,ERROR: <_InactiveRpcError of RPC that terminated with:
