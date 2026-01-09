@@ -3,13 +3,8 @@
 Solver IDs match `solvers.md`:
 
 1) --alias lama-first
-2) --alias seq-sat-lama-2011
-3) FF greedy (lazy_greedy + preferred)
-4) EHC with FF
-5) CEA greedy
-6) CG greedy
-7) EHC with goalcount
-8) weighted A* with FF
+2) --alias seq-sat-fd-autotune-1
+3) --alias seq-sat-fd-autotune-2
 """
 
 from __future__ import annotations
@@ -27,67 +22,103 @@ class FDConfig:
 
 FD_PORTFOLIO: dict[int, FDConfig] = {
     1: FDConfig(1, "lama-first", ["--alias", "lama-first"], args_before_files=True),
-    2: FDConfig(2, "seq-sat-lama-2011", ["--alias", "seq-sat-lama-2011"], args_before_files=True),
+    2: FDConfig(
+        2,
+        "autotune-1-phase1",
+        [
+            "--search",
+            "let(hff,ff(transform=adapt_costs(one)),"
+            "lazy(alt([single(sum([g(),weight(hff,10)])),"
+            "single(sum([g(),weight(hff,10)]),pref_only=true)],boost=2000),"
+            "preferred=[hff],reopen_closed=false,cost_type=one))",
+        ],
+        args_before_files=False,  # <-- IMPORTANT: --search must go after domain/problem files
+    ),
     3: FDConfig(
         3,
-        "ff-gbfs",
+        "autotune-2-phase2",
         [
-            "--evaluator",
-            "hff=ff()",
             "--search",
-            "lazy_greedy([hff], preferred=[hff])",
+            "let(hcea,cea(transform=adapt_costs(plusone)),"
+            "ehc(hcea,preferred=[hcea],preferred_usage=prune_by_preferred,cost_type=normal))",
         ],
+        args_before_files=False,  # <-- critical: --search must go AFTER domain/problem files
     ),
     4: FDConfig(
         4,
-        "ehc-ff",
+        "autotune-2-phase2",
         [
-            "--evaluator",
-            "hff=ff()",
             "--search",
-            "ehc(hff, preferred=[hff])",
+            "let(hcea,cea(transform=adapt_costs(plusone)),"
+            "let(hcg,cg(transform=adapt_costs(one)),"
+            "let(hgc,goalcount(transform=adapt_costs(plusone)),"
+            "let(hff,ff(),"
+            "lazy(alt(["
+            "single(sum([weight(g(),2),weight(hff,3)])),"
+            "single(sum([weight(g(),2),weight(hff,3)]),pref_only=true),"
+            "single(sum([weight(g(),2),weight(hcg,3)])),"
+            "single(sum([weight(g(),2),weight(hcg,3)]),pref_only=true),"
+            "single(sum([weight(g(),2),weight(hcea,3)])),"
+            "single(sum([weight(g(),2),weight(hcea,3)]),pref_only=true),"
+            "single(sum([weight(g(),2),weight(hgc,3)])),"
+            "single(sum([weight(g(),2),weight(hgc,3)]),pref_only=true)"
+            "],boost=200),"
+            "preferred=[hcea,hgc],reopen_closed=false,cost_type=one)"
+            "))))",
         ],
+        args_before_files=False,  # <-- critical ordering in your runner
     ),
+    # FF ONLY (fast greedy best-first, no landmarks)
     5: FDConfig(
         5,
-        "cea-gbfs",
+        "ff",
         [
             "--evaluator",
-            "hcea=cea()",
+            "h=ff()",
             "--search",
-            "lazy_greedy([hcea], preferred=[hcea])",
+            "lazy_greedy([h], preferred=[h])",
         ],
+        args_before_files=False,
     ),
+
+    # CEA ONLY (greedy best-first guided by context-enhanced additive)
     6: FDConfig(
         6,
-        "cg-gbfs",
+        "cea",
         [
             "--evaluator",
-            "hcg=cg()",
+            "h=cea()",
             "--search",
-            "lazy_greedy([hcg])",
+            "lazy_greedy([h], preferred=[h])",
         ],
+        args_before_files=False,
     ),
+
+    # EHC with FF (hill-climbing variant guided by FF)
     7: FDConfig(
         7,
-        "ehc-goalcount",
+        "add",
         [
             "--evaluator",
-            "hgc=goalcount()",
+            "h=add()",
             "--search",
-            "ehc(hgc)",
+            "lazy_greedy([h], preferred=[h])",
         ],
+        args_before_files=False,
     ),
+
+    # EHC with FF (hill-climbing variant guided by FF)
     8: FDConfig(
         8,
-        "wastar-ff",
+        "cg",
         [
             "--evaluator",
-            "hff=ff()",
+            "h=cg()",
             "--search",
-            "eager_wastar([hff], w=5, preferred=[hff])",
+            "lazy_greedy([h], preferred=[h])",
         ],
-    ),
+        args_before_files=False,
+    )
 }
 
 
