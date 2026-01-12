@@ -1,74 +1,17 @@
-# Label generation (Fast Downward portfolio)
+# Proyecto AP Portfolio: Pablo Martín Berna Y Mauro García Lorenzo
+(La IA Generativa se ha utilizado en muchas fases del proyecto; tanto en la fase de planteamiento del problema, como en la implementación y refinado de los resultados).
+El objetivo de este proyecto era el de entrenar un modelo que fuera capaz de predecir cuál es el planificador apropiado (de los entrenados), para un problema a tratar.
+Para ello cogeremos 1000 problemas del repositorio de la competición IPC utilizado para la práctica de Fast Downward (directorio _{ROOT_DIR}/data/}_).
 
-This directory contains a small runner to execute the 3-solver portfolio described in `solvers.md` over the PDDL instances under `data/` and produce **labels** for ML.
+De estos 1000 problemas obtendremos muchas características utilizando los scripts que se encuentran en el directorio _{ROOT_DIR}/feature_extraction/_. La tabla con las características de cada problema se encuentra en {ROOT_DIR}/all_features.csv.
+El número de características que obtuvimos para cada problema era muy alto, por lo que iteramos bastante a la hora de entrenar el modelo para encontrar las características más determinantes. 
+La selección de características y entrenamiento el modelo se realiza mediente el script {ROOT_DIR}/post_process/train_selector.py. 
 
-Each output row is:
+Una vez que tenemos las características, utilizamos el script _{ROOT_DIR}/problem_solving.py_. Los logs de las ejecuciones no están subidos al repositorio, ya que ocupan mucho espacio.
 
-- `name`: problem filename (e.g. `p01.pddl`)
-- `domain`: domain folder name (e.g. `agricola-sat18-strips`)
-- `solved`: `1` if a plan was found within limits, else `0`
-- `time_seconds`: Fast Downward reported `INFO     Planner time: ...s` **only if** solved; otherwise `NaN`
+Para analizar los logs y obtener estadísticas de las ejecuciones utilizamos dos scripts: _{ROOT_DIR}/post_process/analyze_results.py_, y _{ROOT_DIR}/post_process/parse_fg_logs_to_csv.py_. 
+Estas estadísticas se recogen en _{ROOT_DIR}/post_process/results_analysis_. 
 
-The output CSV is intended to be merged later into `all_features.csv` using the key `(name, domain)`.
+Por último, hacemos un postproceso con {ROOT_DIR}/analyze_distributions, script que nos permitía obtener conclusiones de 
+las características que tiene en cuenta el modelo para seleccionar un planificador u otro, y extraer las conclusiones finales del proyecto.
 
-## Assumptions
-
-- Your Fast Downward entrypoint is a `fast-downward.py` script.
-- Each domain folder in `data/<domain>/` contains `domain.pddl` plus one or more `*.pddl` problem files.
-
-## Usage
-
-From repo root:
-
-```bash
-python3 -m label_generation.run_fd_labels \
-  --solver 1 \
-  --data-dir data \
-  --fd-path /home/pauma/downward/fast-downward.py \
-  --out solvers_labels/solver1.csv
-```
-
-### Limits
-
-Defaults match your request:
-
-- time limit: 1800 seconds (30 minutes)
-- memory cap: 8 GB
-
-The runner enforces limits in two ways:
-
-- passes Fast Downward driver options: `--overall-time-limit` (seconds) and `--overall-memory-limit` (MiB)
-- additionally uses an external wall-clock timeout as a safety net
-
-### Resume
-
-The runner is resume-safe by default:
-
-- if `--out` exists, it loads all `(name, domain)` already present and **skips** them.
-- it appends one row per completed run and flushes immediately.
-
-Overwrite:
-
-```bash
-python3 -m label_generation.run_fd_labels \
-  --solver 1 \
-  --data-dir data \
-  --fd-path /home/pauma/downward/fast-downward.py \
-  --out solvers_labels/solver1.csv \
-  --overwrite
-```
-
-## Fixing an existing CSV (re-parse times)
-
-If you generated a CSV before switching to parsing `Planner time`, you can rewrite the times from the stored logs:
-
-```bash
-python3 -m label_generation.fix_times_from_logs \
-  --solver 1 \
-  --csv solvers_labels/smoke_solver1.csv
-```
-
-## Outputs
-
-- CSV labels: whatever you pass via `--out`
-- Logs: `label_generation/logs/solver_<id>/<domain>/<problem>.log`
