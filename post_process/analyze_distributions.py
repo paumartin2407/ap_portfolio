@@ -9,7 +9,7 @@ import seaborn as sns
 # ==========================================
 # CONFIGURACIÓN
 # ==========================================
-LOGS_FILE = '../results_analysis/logs_metrics.csv'
+LOGS_FILE = 'results_analysis/logs_metrics.csv'
 FEATURES_FILE = '../all_features.csv'
 
 # Compararemos SOLVER 5 (FF) vs SOLVER 8 (CG)

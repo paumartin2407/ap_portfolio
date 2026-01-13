@@ -10,7 +10,7 @@ from sklearn.tree import export_text
 # ==========================================
 # CONFIGURATION
 # ==========================================
-LOGS_FILE = '../results_analysis/logs_metrics.csv'
+LOGS_FILE = 'results_analysis/logs_metrics.csv'
 FEATURES_FILE = '../all_features.csv'
 
 # STRATEGY 1: Remove Solver 6 (Low support/Noise)
