@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import math
 import os
 import re
 import signal
@@ -36,6 +34,15 @@ _UNSOLVED_PATTERNS = [
     re.compile(r"\bdead end\b", re.IGNORECASE),
 ]
 
+_TIMEOUT_PATTERNS = [
+    re.compile(r"\bTime limit has been reached\b", re.IGNORECASE),
+    re.compile(r"\bplanner time limit\b", re.IGNORECASE),
+    # Common on Linux when FD enforces timeouts via signals.
+    re.compile(r"\bcaught signal\s+24\b", re.IGNORECASE),
+]
+
+_PLANNER_TIME_PATTERN = re.compile(r"^INFO\s+Planner time:\s*([0-9]*\.?[0-9]+)s\s*$", re.MULTILINE)
+
 
 def iter_instances(data_dir: Path) -> Iterable[Instance]:
     if not data_dir.exists():
@@ -57,33 +64,8 @@ def iter_instances(data_dir: Path) -> Iterable[Instance]:
             )
 
 
-def load_done_keys(out_csv: Path) -> set[tuple[str, str]]:
-    if not out_csv.exists():
-        return set()
-
-    done: set[tuple[str, str]] = set()
-    with out_csv.open("r", newline="") as f:
-        reader = csv.DictReader(f)
-        # Accept older files with extra columns.
-        for row in reader:
-            name = (row.get("name") or "").strip()
-            domain = (row.get("domain") or "").strip()
-            if name and domain:
-                done.add((name, domain))
-    return done
-
-
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-
-
-def write_header_if_needed(out_csv: Path) -> None:
-    if out_csv.exists() and out_csv.stat().st_size > 0:
-        return
-    ensure_parent_dir(out_csv)
-    with out_csv.open("w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["name", "domain", "solved", "time_seconds"])
 
 
 def _limit_resources_preexec(mem_bytes: int | None) -> None:
@@ -108,8 +90,8 @@ def run_fd(
     time_limit_s: int,
     mem_bytes: int | None,
     log_path: Path,
-) -> tuple[int, float | float("nan"), str]:
-    """Returns: (solved, time_seconds_or_nan, status_string)."""
+) -> tuple[int, float | float("nan"), float, str]:
+    """Returns: (solved, planner_time_seconds_or_nan, wall_time_seconds, status_string)."""
 
     cfg = get_fd_config(solver_id)
 
@@ -128,7 +110,30 @@ def run_fd(
     # - evaluator/search options AFTER domain/problem files
     before_files = cfg.args if cfg.args_before_files else []
     after_files = [] if cfg.args_before_files else cfg.args
-    cmd = [str(fd_path), *driver_opts, *before_files, str(domain_pddl), str(problem_pddl), *after_files]
+
+    # Isolate each run in its own working directory so Fast Downward's default
+    # intermediate files (e.g., output.sas, sas_plan) can't collide across runs.
+    # This also avoids sporadic cleanup errors (FileNotFoundError on output.sas)
+    # that can make timeouts look like failures (exit code 1).
+    work_dir = log_path.parent / "work"
+    ensure_parent_dir(work_dir / "_keep")
+
+    # Use absolute PDDL paths so changing cwd doesn't break relative inputs.
+    domain_abs = domain_pddl.resolve()
+    problem_abs = problem_pddl.resolve()
+
+    # Direct SAS output into the per-run work directory.
+    sas_file = work_dir / "output.sas"
+    cmd = [
+        str(fd_path),
+        *driver_opts,
+        "--sas-file",
+        str(sas_file),
+        *before_files,
+        str(domain_abs),
+        str(problem_abs),
+        *after_files,
+    ]
 
     ensure_parent_dir(log_path)
     start = time.time()
@@ -141,6 +146,7 @@ def run_fd(
                 stdout=logf,
                 stderr=subprocess.STDOUT,
                 start_new_session=True,
+                cwd=str(work_dir),
                 preexec_fn=(
                     (lambda: _limit_resources_preexec(mem_bytes)) if mem_bytes is not None else None
                 ),
@@ -149,18 +155,31 @@ def run_fd(
             safety_timeout = int(time_limit_s) + 60 if time_limit_s is not None else None
             proc.communicate(timeout=safety_timeout)
 
-        elapsed = time.time() - start
+        wall_seconds = time.time() - start
+        if _log_indicates_timeout(log_path):
+            planner_time = parse_planner_time_seconds(log_path)
+            return 0, (planner_time if planner_time is not None else float("nan")), wall_seconds, "timeout"
+
         solved = 1 if _log_indicates_solved(log_path) else 0
         if solved:
-            return 1, elapsed, "solved"
-        return 0, float("nan"), f"exit_{proc.returncode}"
+            planner_time = parse_planner_time_seconds(log_path)
+            if planner_time is None:
+                return 1, float("nan"), wall_seconds, "solved_no_planner_time"
+            return 1, planner_time, wall_seconds, "solved"
+
+        planner_time = parse_planner_time_seconds(log_path)
+        return 0, (planner_time if planner_time is not None else float("nan")), wall_seconds, f"exit_{proc.returncode}"
 
     except subprocess.TimeoutExpired:
         _kill_child_process_group(proc)
-        return 0, float("nan"), "timeout"
+        wall_seconds = time.time() - start
+        planner_time = parse_planner_time_seconds(log_path)
+        return 0, (planner_time if planner_time is not None else float("nan")), wall_seconds, "timeout"
     except Exception as e:
         _kill_child_process_group(proc)
-        return 0, float("nan"), f"error:{type(e).__name__}"
+        wall_seconds = time.time() - start
+        planner_time = parse_planner_time_seconds(log_path)
+        return 0, (planner_time if planner_time is not None else float("nan")), wall_seconds, f"error:{type(e).__name__}"
 
 
 def _kill_child_process_group(proc: subprocess.Popen[bytes] | None) -> None:
@@ -199,19 +218,39 @@ def _log_indicates_solved(log_path: Path) -> bool:
     return False
 
 
-def append_result(out_csv: Path, name: str, domain: str, solved: int, time_seconds: float) -> None:
-    # Write one row and flush immediately for resume safety.
-    with out_csv.open("a", newline="") as f:
-        writer = csv.writer(f)
-        time_field = "NaN" if (not solved or math.isnan(time_seconds)) else f"{time_seconds:.3f}"
-        writer.writerow([name, domain, int(solved), time_field])
-        f.flush()
-        os.fsync(f.fileno())
+def _log_indicates_timeout(log_path: Path) -> bool:
+    try:
+        text = log_path.read_text(errors="ignore")
+    except Exception:
+        return False
+    return any(p.search(text) for p in _TIMEOUT_PATTERNS)
+
+
+def parse_planner_time_seconds(log_path: Path) -> float | None:
+    """Extract Fast Downward driver 'Planner time' in seconds from a log file."""
+    try:
+        text = log_path.read_text(errors="ignore")
+    except Exception:
+        return None
+
+    m = _PLANNER_TIME_PATTERN.search(text)
+    if not m:
+        return None
+
+    try:
+        value = float(m.group(1))
+    except Exception:
+        return None
+    if value < 0:
+        return None
+    return value
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run Fast Downward portfolio solver to generate labels.")
-    parser.add_argument("--solver", type=int, required=True, help="Solver id 1-8 (see solvers.md)")
+    parser = argparse.ArgumentParser(
+        description="Run a Fast Downward configuration on all instances, saving logs and printing runtimes."
+    )
+    parser.add_argument("--solver", type=int, required=True, help="Solver id 1-3 (see solvers.md)")
     parser.add_argument("--data-dir", type=Path, default=Path("data"), help="Root data directory")
     parser.add_argument(
         "--fd-path",
@@ -219,7 +258,6 @@ def main(argv: list[str] | None = None) -> int:
         required=True,
         help="Path to fast-downward.py (or wrapper script)",
     )
-    parser.add_argument("--out", type=Path, required=True, help="Output CSV path")
     parser.add_argument("--time-limit", type=int, default=1800, help="Timeout per instance (seconds)")
     parser.add_argument("--mem-gb", type=float, default=8.0, help="Memory cap (GB) via RLIMIT_AS")
     parser.add_argument(
@@ -228,15 +266,15 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable memory limiting (useful if RLIMIT_AS causes issues)",
     )
     parser.add_argument(
-        "--overwrite",
-        action="store_true",
-        help="Overwrite output CSV instead of resuming",
-    )
-    parser.add_argument(
         "--domain",
         type=str,
         default=None,
         help="Optional: only run this domain folder (e.g. agricola-sat18-strips)",
+    )
+    parser.add_argument(
+        "--rerun-existing",
+        action="store_true",
+        help="Re-run instances even if their log file already exists",
     )
 
     args = parser.parse_args(argv)
@@ -244,14 +282,6 @@ def main(argv: list[str] | None = None) -> int:
     fd_path: Path = args.fd_path
     if not fd_path.exists():
         raise FileNotFoundError(f"fast-downward.py not found: {fd_path}")
-
-    out_csv: Path = args.out
-    if args.overwrite and out_csv.exists():
-        out_csv.unlink()
-
-    write_header_if_needed(out_csv)
-
-    done = load_done_keys(out_csv)
 
     mem_bytes = None
     if not args.no_mem_limit:
@@ -262,20 +292,22 @@ def main(argv: list[str] | None = None) -> int:
     total = 0
     skipped = 0
     solved_count = 0
+    timeout_count = 0
+    errorish_count = 0
 
     for inst in iter_instances(args.data_dir):
         if args.domain is not None and inst.domain != args.domain:
             continue
 
         total += 1
-        key = (inst.name, inst.domain)
-        if key in done:
-            skipped += 1
-            continue
-
         log_path = logs_root / inst.domain / f"{inst.name}.log"
 
-        solved, tsec, status = run_fd(
+        if not args.rerun_existing and log_path.exists() and log_path.stat().st_size > 0:
+            skipped += 1
+            print(f"[{args.solver}] {inst.domain}/{inst.name}: skip_existing_log", flush=True)
+            continue
+
+        solved, planner_tsec, wall_tsec, status = run_fd(
             fd_path=fd_path,
             solver_id=int(args.solver),
             domain_pddl=inst.domain_pddl,
@@ -288,17 +320,21 @@ def main(argv: list[str] | None = None) -> int:
         if solved:
             solved_count += 1
 
-        append_result(out_csv, inst.name, inst.domain, solved, tsec)
-        done.add(key)
+        if status == "timeout":
+            timeout_count += 1
+        elif not solved:
+            errorish_count += 1
+
+        planner_part = f", planner={planner_tsec:.2f}s" if planner_tsec == planner_tsec else ""
 
         print(
-            f"[{args.solver}] {inst.domain}/{inst.name}: {status}"
-            + (f" ({tsec:.2f}s)" if solved else ""),
+            f"[{args.solver}] {inst.domain}/{inst.name}: {status}, wall={wall_tsec:.2f}s" + planner_part,
             flush=True,
         )
 
     print(
-        f"Done. considered={total}, skipped={skipped}, newly_run={total-skipped}, solved={solved_count}",
+        f"Done. considered={total}, skipped={skipped}, newly_run={total-skipped}, "
+        f"solved={solved_count}, timeout={timeout_count}, other_fail={errorish_count}",
         flush=True,
     )
 

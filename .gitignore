@@ -9,4 +9,11 @@ probe_logs/
 
 # SAS planning artifacts
 sas_plan
+output.sas
 sas_plan/
+
+.venv/
+logs/
+solvers_labels/
+__pycache__/
+*.pyc
